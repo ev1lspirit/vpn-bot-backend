@@ -1,0 +1,29 @@
+select_servers_with_offset: "SELECT * FROM Server LIMIT %s OFFSET %s;"
+select_specific_server: "SELECT * FROM Server WHERE id=%s;"
+select_specific_tariff: "SELECT * FROM Tariff WHERE id=%s;"
+select_server_count: "SELECT COUNT(id) FROM Server;"
+select_tariffs: "SELECT * FROM Tariff;"
+insert_server_request: "INSERT INTO ServerRequest 
+(uid, telegram_requester_id, telegram_requester_username, requested_server, requested_tariff, request_date) VALUES (
+'{uid}', {user_id}, '{username}', {server_id}, {tariff_id}, current_timestamp);"
+delete_server_request: "DELETE FROM ServerRequest WHERE uid = %s RETURNING *;"
+select_server_request: "SELECT * FROM ServerRequest WHERE uid = %s;"
+select_total_requests_made_by_client: "SELECT COUNT(uid) FROM ServerRequest WHERE telegram_requester_id = %s;"
+already_made_request: "SELECT 1 FROM ServerRequest WHERE telegram_requester_id = %s AND requested_server = %s;"
+select_request_by_uid: "SELECT * FROM ServerRequest WHERE uid = %s;"
+check_if_subscriber_exists: "SELECT 1 FROM Subscriber WHERE telegram_user_id = %s;"
+insert_subscriber: "INSERT INTO Subscriber (telegram_id, telegram_username, join_date) VALUES (%s, %s, current_timestamp)
+ON CONFLICT (telegram_id) DO NOTHING;"
+insert_subscription: "INSERT INTO ServerSubscriber (server_id, subscriber_id, tariff_id, uuid, subscription_valid_until)
+VALUES (%s, %s, %s, %s, %s);"
+look_for_expired_subscriptions: "SELECT server_id, subscriber_id, tariff_id, uuid, subscription_valid_until,
+alias, ip_address, location FROM ServerSubscriber JOIN Server ON id = server_id WHERE subscription_valid_until < NOW();"
+select_active_subscriptions: "SELECT server_id, subscriber_id, tariff_id, uuid, subscription_valid_until,
+alias, ip_address, location FROM ServerSubscriber JOIN Server ON id = server_id
+WHERE subscriber_id = %s LIMIT %s OFFSET %s;"
+select_subscription_server: "SELECT ip_address, alias, location, flag_code FROM ServerSubscriber JOIN Server ON id = server_id 
+WHERE subscriber_id = %s AND uuid = %s;"
+check_if_user_has_subscription: "SELECT 1 FROM ServerSubscriber WHERE subscriber_id = %s and server_id = %s;"
+select_total_subscriptions: "SELECT COUNT(*) FROM ServerSubscriber WHERE subscriber_id = %s;"
+delete_expired_user: "DELETE FROM ServerSubscriber WHERE uuid = %s;"
+delete_old_server_requests: "DELETE FROM ServerRequest WHERE request_date < NOW() - INTERVAL '5 days';"

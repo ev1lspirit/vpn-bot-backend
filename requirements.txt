@@ -1,0 +1,5 @@
+aiogram==3.6.0
+APScheduler==3.10.4
+qrcode==7.4.2
+psycopg2==2.9.9
+psycopg2-pool==1.2
